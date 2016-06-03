@@ -14,6 +14,7 @@ namespace Acquaint.Data
             get { return _FirstName; }
             set
             {
+                //comment
                 SetProperty(ref _FirstName, value);
 				// DisplayName is dependent on FirstName
                 OnPropertyChanged(nameof(DisplayName));
