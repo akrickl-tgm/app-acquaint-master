@@ -32,8 +32,8 @@ namespace Acquaint.Native.Droid
 		readonly IDataSource<Acquaintance> _AcquaintanceDataSource;
 		Acquaintance _Acquaintance;
 		View _ContentLayout;
-		ImageView _GetDirectionsActionImageView;
-		LatLng _GeocodedLocation;
+		//ImageView _GetDirectionsActionImageView;
+		//LatLng _GeocodedLocation;
 
 		public AcquaintanceDetailActivity()
 		{
@@ -107,14 +107,16 @@ namespace Acquaint.Native.Droid
 
 			_ContentLayout.InflateAndBindTextView(Resource.Id.emailTextView, _Acquaintance.Email);
 
-			_GetDirectionsActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.getDirectionsActionImageView, Resource.Mipmap.directions);
-			_GetDirectionsActionImageView.Visibility = ViewStates.Invisible;
-			_GetDirectionsActionImageView.Click += async (sender, e) => {
-				if (_GeocodedLocation != null)
+            //google maps ? 
+			//_GetDirectionsActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.getDirectionsActionImageView, Resource.Mipmap.directions);
+			//_GetDirectionsActionImageView.Visibility = ViewStates.Invisible;
+			//_GetDirectionsActionImageView.Click += async (sender, e) => {
+			//	if (_GeocodedLocation != null)
 					// we're using the External Maps plugin from James Montemagno here (included as a NuGet)
-					await CrossExternalMaps.Current.NavigateTo(_Acquaintance.DisplayName, _GeocodedLocation.Latitude, _GeocodedLocation.Longitude, NavigationType.Driving);
-			};
+			//		await CrossExternalMaps.Current.NavigateTo(_Acquaintance.DisplayName, _GeocodedLocation.Latitude, _GeocodedLocation.Longitude, NavigationType.Driving);
+			//};
 
+            /*
 			var messageActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.messageActionImageView, Resource.Mipmap.message);
 			messageActionImageView.Click += (sender, e) => {
 				// we're using the Messaging plugin from Carel Lotz here (included as a NuGet)
@@ -131,6 +133,9 @@ namespace Acquaint.Native.Droid
 					phoneCallTask.MakePhoneCall(_Acquaintance.Phone.SanitizePhoneNumber());
 			};
 
+    */
+
+            /*
 			var emailActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.emailActionImageView, Resource.Mipmap.email);
 			emailActionImageView.Click += (sender, e) => {
 				// we're using the Messaging plugin from Carel Lotz here (included as a NuGet)
@@ -147,6 +152,7 @@ namespace Acquaint.Native.Droid
 
 			// get the map, which calls the OnMapReady() method below (by virtue of the IOnMapReadyCallback interface that this class implements)
 			mapview.GetMapAsync(this);
+            */
 		}
 
 		void SetupAnimations()
@@ -164,6 +170,7 @@ namespace Acquaint.Native.Droid
 
 		public async void OnMapReady(GoogleMap googleMap)
 		{
+            /*
 			// disable the compass on the map
 			googleMap.UiSettings.CompassEnabled = false;
 
@@ -200,11 +207,13 @@ namespace Acquaint.Native.Droid
 
 				// add the pin to the map
 				googleMap.AddMarker(marker);
+                */
 			}
 		}
 
 		#endregion
 
+    /*
 		async Task<LatLng> GetPositionAsync()
 		{
 			const string errorMessage = "Timed out waiting for response from server";
@@ -327,6 +336,6 @@ namespace Acquaint.Native.Droid
 
 			return endingIndex;
 		}
-	}
+	}*/
 }
 
