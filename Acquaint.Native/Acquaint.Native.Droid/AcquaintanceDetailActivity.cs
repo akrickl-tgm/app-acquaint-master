@@ -73,6 +73,7 @@ namespace Acquaint.Native.Droid
 
 		void SetupViews(View layout, Bundle savedInstanceState)
 		{
+            //TODO bindings
 			// inflate the content layout
 			_ContentLayout = layout.FindViewById<LinearLayout>(Resource.Id.contentLayout);
 

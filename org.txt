@@ -1,0 +1,16 @@
+bindings von der übersicht 
+axquaint.naitive.droid - acquaitListActivity.cs Klasse AcquaintanceViewHolder
+
+bindings von details 
+axquaint.naitive.droid - axquaintanceDetailActivity.cs Klasse Setup Views 
+
+views von adroid 
+aquaint.native-droid- resources - layout - ...axml
+
+
+datenverwaltung 
+base von 1 element 
+common - acquaintance.cs 
+
+Daten Laden 
+common - acquaintanceDataSource.cs
