@@ -13,6 +13,7 @@ using FFImageLoading.Transformations;
 using FFImageLoading.Views;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
 using Acquaint.Data;
+using System;
 
 namespace Acquaint.Native.Droid
 {
@@ -27,11 +28,12 @@ namespace Acquaint.Native.Droid
 		{
 			base.OnCreate(savedInstanceState);
 
-			// instantiate adapter
-			var acquaintanceCollectionAdapter = new AcquaintanceCollectionAdapter();
+
+            // instantiate adapter
+            var animalCollectionAdapter = new AnimalCollectionAdapter();
 
 			// load the items
-			await acquaintanceCollectionAdapter.LoadAcquaintances();
+			await animalCollectionAdapter.LoadAnimals();
 
 			// instantiate the layout manager
 			var layoutManager = new LinearLayoutManager(this);
@@ -46,7 +48,7 @@ namespace Acquaint.Native.Droid
 			Window.AddFlags(WindowManagerFlags.DrawsSystemBarBackgrounds);
 
 			// set the title of both the activity and the action bar
-			Title = SupportActionBar.Title = "Acquaintances";
+			Title = SupportActionBar.Title = "Animals";
 
 			// instantiate/inflate the RecyclerView
 			var recyclerView = (RecyclerView)FindViewById(Resource.Id.acquaintanceRecyclerView);
@@ -55,7 +57,7 @@ namespace Acquaint.Native.Droid
 			recyclerView.SetLayoutManager(layoutManager);
 
 			// set RecyclerView's adapter
-			recyclerView.SetAdapter(acquaintanceCollectionAdapter);
+			recyclerView.SetAdapter(animalCollectionAdapter);
 		}
 	}
 
@@ -64,32 +66,52 @@ namespace Acquaint.Native.Droid
 	/// </summary>
 	internal class AcquaintanceViewHolder : RecyclerView.ViewHolder
 	{
-		public View AcquaintanceRow { get; }
+		public View AnimalRow { get; }
 
 		public TextView NameTextView { get; }
 
-		public TextView CompanyTextView { get; }
+		public TextView KingdomTextView { get; }
 
-		public TextView JobTitleTextView { get; }
+		public TextView OriginTextView { get; }
 
 		public ImageViewAsync ProfilePhotoImageView { get; }
 
 		public AcquaintanceViewHolder(View itemView) : base(itemView)
 		{
-			AcquaintanceRow = itemView;
+			AnimalRow = itemView;
 
-			NameTextView = AcquaintanceRow.FindViewById<TextView>(Resource.Id.nameTextView);
-			CompanyTextView = AcquaintanceRow.FindViewById<TextView>(Resource.Id.companyTextView);
-			JobTitleTextView = AcquaintanceRow.FindViewById<TextView>(Resource.Id.jobTitleTextView);
-			ProfilePhotoImageView = AcquaintanceRow.FindViewById<ImageViewAsync>(Resource.Id.profilePhotoImageView);
+			NameTextView = AnimalRow.FindViewById<TextView>(Resource.Id.nameTextView);
+			KingdomTextView = AnimalRow.FindViewById<TextView>(Resource.Id.companyTextView); //kingdom
+			OriginTextView = AnimalRow.FindViewById<TextView>(Resource.Id.jobTitleTextView); //origin
+			ProfilePhotoImageView = AnimalRow.FindViewById<ImageViewAsync>(Resource.Id.profilePhotoImageView);
 		}
 	}
 
 	/// <summary>
 	/// Acquaintance collection adapter. Coordinates data the child views of RecyclerView.
 	/// </summary>
-	internal class AcquaintanceCollectionAdapter : RecyclerView.Adapter, View.IOnClickListener
+	internal class AnimalCollectionAdapter : RecyclerView.Adapter, View.IOnClickListener
 	{
+        public List<Animal> animals { get; private set;  }
+
+        // load animals 
+
+        //open database connection 
+        public async Task LoadAnimals()
+        {
+            DatabaseConnect con = new DatabaseConnect();
+            con.openConnection();
+
+
+            animals = con.getAllAnimals(); 
+
+            //viewHolder.NameTextView.Text = "ausgabe " + conn.getAllAnimals();
+            //Console.WriteLine("AUSGABE DB!! " + con.getAllAnimals());
+            con.closeConnection();
+        }
+            
+
+        /* 
 		// a data source field
 	    readonly IDataSource<Acquaintance> _AcquaintanceDataSource;
 
@@ -111,6 +133,8 @@ namespace Acquaint.Native.Droid
 			Acquaintances = (await _AcquaintanceDataSource.GetItems()).ToList();
 		}
 
+    */
+
 		// when a RecyclerView itemView is requested, the OnCreateViewHolder() is called
 		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
 		{
@@ -131,26 +155,31 @@ namespace Acquaint.Native.Droid
 			var viewHolder = holder as AcquaintanceViewHolder;
 
 			// get an item by position (index)
-			var acquaintance = Acquaintances[position];
+			var animal = animals[position];
 
 			// assign values to the views' text properties
 		    if (viewHolder == null) return;
 
-		    viewHolder.NameTextView.Text = acquaintance.DisplayName;
-		    viewHolder.CompanyTextView.Text = acquaintance.Company;
-		    viewHolder.JobTitleTextView.Text = acquaintance.JobTitle;
+            //acquaintance.DisplayName;
+            viewHolder.NameTextView.Text = animal.name; 
+		    viewHolder.KingdomTextView.Text = animal.kingdom;
+		    viewHolder.OriginTextView.Text = animal.origin;
 
-		    // use FFImageLoading library to load an android asset image into the imageview
-		    ImageService.LoadFileFromApplicationBundle(acquaintance.PhotoUrl).Transform(new CircleTransformation()).Into(viewHolder.ProfilePhotoImageView);
+
+           
+           
+
+            // use FFImageLoading library to load an android asset image into the imageview
+            ImageService.LoadFileFromApplicationBundle(animal.PhotoURL).Transform(new CircleTransformation()).Into(viewHolder.ProfilePhotoImageView);
 
 		    // use FFImageLoading library to asynchonously load the image into the imageview
 		    // ImageService.LoadUrl(a.SmallPhotoUrl).Transform(new CircleTransformation()).Into(viewHolder.ProfilePhotoImageView);
 
 		    // set the Tag property of the AcquaintanceRow view to the position (index) of the item that is currently being bound. We'll need it later in the OnLick() implementation.
-		    viewHolder.AcquaintanceRow.Tag = position;
+		    viewHolder.AnimalRow.Tag = position;
 
 		    // set OnClickListener of AcquaintanceRow
-		    viewHolder.AcquaintanceRow.SetOnClickListener(this);
+		    viewHolder.AnimalRow.SetOnClickListener(this);
 		}
 
 		public void OnClick(View v)
@@ -159,16 +188,17 @@ namespace Acquaint.Native.Droid
 			var detailIntent = new Intent(v.Context, typeof(AcquaintanceDetailActivity));
 
 			// get an item by position (index)
-			var acquaintance = Acquaintances[(int)v.Tag];
+			var animal = animals[(int)v.Tag];
 
 			// Add some identifying item data to the intent. In this case, the id of the acquaintance for which we're about to display the detail screen.
-			detailIntent.PutExtra(v.Context.Resources.GetString(Resource.String.acquaintanceDetailIntentKey), acquaintance.Id);
+			detailIntent.PutExtra(v.Context.Resources.GetString(Resource.String.acquaintanceDetailIntentKey), animal.id);
 
 			// get a referecne to the profileImageView
 			var profileImageView = v.FindViewById(Resource.Id.profilePhotoImageView);
 
-			// shared element transitions are only supported on Android 5.0+
-			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+
+            // shared element transitions are only supported on Android 5.0+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 			{
 				// define transitions 
 				var transitions = new List<Android.Util.Pair>() {
@@ -188,7 +218,7 @@ namespace Acquaint.Native.Droid
 		}
 
 		// Return the number of items
-		public override int ItemCount => Acquaintances.Count;
+		public override int ItemCount => animals.Count;
 	}
 }
 

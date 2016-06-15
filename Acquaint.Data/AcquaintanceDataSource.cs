@@ -9,8 +9,11 @@ namespace Acquaint.Data
 {
 	public class AcquaintanceDataSource : IDataSource<Acquaintance>
 	{
-		public AcquaintanceDataSource(bool simulateNetworkLatency = true)
+        
+       
+        public AcquaintanceDataSource(bool simulateNetworkLatency = true)
 		{
+             
 			if (!simulateNetworkLatency)
 				_LatencyTimeSpan = TimeSpan.Zero;
 
@@ -115,7 +118,10 @@ namespace Acquaint.Data
 		/// <returns>The acquaintances.</returns>
 		static List<Acquaintance> GenerateAcquaintances()
 		{
-			return new List<Acquaintance>()
+
+            
+
+            return new List<Acquaintance>()
 			{
 				new Acquaintance() { Id = "00004363-F79A-44E7-BC32-6128E2EC8401", FirstName = "Joseph", LastName = "Grimes", Company = "GG Mechanical", JobTitle = "Vice President", Email = "jgrimes@ggmechanical.com", Phone = "414-367-4348", Street = "2030 Judah St", City = "San Francisco", PostalCode = "94144", State = "CA", PhotoUrl = "josephgrimes.jpg" },
 				new Acquaintance() { Id = "c227bfd2-c6f6-49b5-93ec-afef9eb18d08", FirstName = "Monica", LastName = "Green", Company = "Calcom Logistics", JobTitle = "Director", Email = "mgreen@calcomlogistics.com", Phone = "925-353-8029", Street = "231 3rd Ave", City = "San Francisco", PostalCode = "94118", State = "CA", PhotoUrl = "monicagreen.jpg" },

@@ -29,9 +29,14 @@ namespace Acquaint.Native.Droid
 	[Activity]			
 	public class AcquaintanceDetailActivity : AppCompatActivity, IOnMapReadyCallback
 	{
+
+        Animal _Animal;
+
+        View _ContentLayout;
+        /*
 		readonly IDataSource<Acquaintance> _AcquaintanceDataSource;
 		Acquaintance _Acquaintance;
-		View _ContentLayout;
+		
 		//ImageView _GetDirectionsActionImageView;
 		//LatLng _GeocodedLocation;
 
@@ -40,7 +45,8 @@ namespace Acquaint.Native.Droid
 			_AcquaintanceDataSource = new AcquaintanceDataSource();
 		}
 
-		protected override async void OnCreate(Bundle savedInstanceState)
+        */
+        protected override async void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
 
@@ -60,11 +66,16 @@ namespace Acquaint.Native.Droid
 			// extract the acquaintance id fomr the intent
 			var acquaintanceId = Intent.GetStringExtra(GetString(Resource.String.acquaintanceDetailIntentKey));
 
-			// fetch the acquaintance based on the id
-			_Acquaintance = await _AcquaintanceDataSource.GetItem(acquaintanceId);
+            // fetch the acquaintance based on the id
+
+            //Database auslesen 
+            DatabaseConnect dbcon = new DatabaseConnect();
+            dbcon.openConnection(); 
+			_Animal = dbcon.getItem(Int32.Parse(acquaintanceId));
+            dbcon.closeConnection(); 
 
 			// set the activity title and action bar title
-			Title = SupportActionBar.Title = _Acquaintance.DisplayName;
+			Title = SupportActionBar.Title = _Animal.name;
 
 			SetupViews(acquaintanceDetailLayout, savedInstanceState);
 
@@ -83,30 +94,30 @@ namespace Acquaint.Native.Droid
 			if (profilePhotoImageView != null)
 			{
 				// use FFImageLoading library to load an android asset image into the imageview
-				ImageService.LoadFileFromApplicationBundle(_Acquaintance.PhotoUrl).Transform(new CircleTransformation()).Into(profilePhotoImageView);
+				ImageService.LoadFileFromApplicationBundle(_Animal.PhotoURL).Transform(new CircleTransformation()).Into(profilePhotoImageView);
 
 				// use FFImageLoading library to asynchonously load the image into the imageview
 				// ImageService.LoadUrl(_Acquaintance.PhotoUrl).Transform(new CircleTransformation()).Into(profilePhotoImageView);
 			}
 
 			// infliate and set the name text view
-			_ContentLayout.InflateAndBindTextView(Resource.Id.nameTextView, _Acquaintance.DisplayName);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.nameTextView, _Animal.name);
 
 			// inflate and set the company name text view
-			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, _Acquaintance.Company);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, _Animal.kingdom);
 
 			// inflate and set the job title text view
-			_ContentLayout.InflateAndBindTextView(Resource.Id.jobTitleTextView, _Acquaintance.JobTitle);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.jobTitleTextView, _Animal.origin);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.streetAddressTextView, _Acquaintance.Street);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.streetAddressTextView, _Animal.description);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.cityTextView, _Acquaintance.City);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.cityTextView, _Animal.family);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.statePostalTextView, _Acquaintance.StatePostal);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.statePostalTextView, _Animal.genus);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.phoneTextView, _Acquaintance.Phone);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.phoneTextView, _Animal.classe);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.emailTextView, _Acquaintance.Email);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.emailTextView, _Animal.order);
 
             //google maps ? 
 			//_GetDirectionsActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.getDirectionsActionImageView, Resource.Mipmap.directions);
@@ -214,129 +225,6 @@ namespace Acquaint.Native.Droid
 
 		#endregion
 
-    /*
-		async Task<LatLng> GetPositionAsync()
-		{
-			const string errorMessage = "Timed out waiting for response from server";
 
-			IList<Address> addresses = new List<Address>();
-			bool firstPassTimedOut = false;
-
-			try
-			{
-				// asynchronously retrieve a geocoded location for the acqaintance's address
-				addresses = await new Geocoder(this).GetFromLocationNameAsync(_Acquaintance.AddressString, 1);
-			} catch (Exception ex)
-			{
-				if (ex.Message == errorMessage)
-				{
-					firstPassTimedOut = true;
-					ShowGeocodingErrorAlert();
-				}
-			}
-
-			// A quirk in the underlying Android geocoding API (not Xamarin.Android) sometimes prevents 
-			// valid addresses from returning coordinates unless the address number is rounded to a multiple of ten.
-			// So, if we don't get coordinates on the first pass, we try a second time with a rounded address number.
-			if (addresses.Count > 0)
-			{
-				return new LatLng(addresses.First().Latitude, addresses.First().Longitude);
-			}
-			else if (!firstPassTimedOut && addresses.Count == 0 && AddressBeginsWithNumber(_Acquaintance.AddressString))
-			{
-				try
-				{
-					addresses = await new Geocoder(this).GetFromLocationNameAsync(GetAddressWithRoundedStreetNumber(_Acquaintance.AddressString), 1);
-				} catch (Exception ex)
-				{
-					if (ex.Message == errorMessage)
-					{
-						ShowGeocodingErrorAlert();
-					}
-				}
-
-				if (addresses.Count > 0)
-				{
-					return new LatLng(addresses.First().Latitude, addresses.First().Longitude);
-				}
-			}
-
-			return null;
-		}
-
-		void ShowGeocodingErrorAlert()
-		{
-			// as long as this activity is not yet destroyed, show an alert indicating the gecooding error
-			if (!IsDestroyed)
-			{
-				//set alert for executing the task
-				var alert = new Android.App.AlertDialog.Builder(this);
-
-				alert.SetTitle("Geocoding Error");
-
-				alert.SetMessage("An error occurred while converting the street address to GPS coordinates.");
-
-				alert.SetPositiveButton("OK", (senderAlert, args) => {
-					// an empty delegate body, because we just want to close the dialog and not take any other action
-				});
-
-				//run the alert in UI thread to display in the screen
-				RunOnUiThread(() => {
-					alert.Show();
-				});
-			}
-		}
-
-		// this override is called when the back button is tapped
-		public override bool OnOptionsItemSelected(IMenuItem item)
-		{
-			// execute a back navigation
-			OnBackPressed();
-
-			return true;
-		}
-
-		// determines if the address begins with a number
-		static bool AddressBeginsWithNumber(string address)
-		{
-			return !String.IsNullOrWhiteSpace(address) && Char.IsDigit(address.ToCharArray().First());
-		}
-
-		// returns a street address with the number portion rounded to the closest tens place.
-		static string GetAddressWithRoundedStreetNumber(string address)
-		{
-			var endingIndex = GetEndingIndexOfNumericPortionOfAddress(address);
-
-			if (endingIndex == 0)
-				return address;
-
-			int originalNumber;
-
-		    Int32.TryParse(address.Substring(0, endingIndex + 1), out originalNumber);
-
-			if (originalNumber == 0)
-				return address;
-
-			var roundedNumber = originalNumber.RoundToLowestHundreds();
-
-			return address.Replace(originalNumber.ToString(), roundedNumber.ToString());
-		}
-
-		// finds the last position index of the street address number
-		static int GetEndingIndexOfNumericPortionOfAddress(string address)
-		{
-			int endingIndex = 0;
-
-			for (int i = 0; i < address.Length; i++)
-			{
-				if (Char.IsDigit(address[i]))
-					endingIndex = i;
-				else
-					break;
-			}
-
-			return endingIndex;
-		}
-	}*/
 }
 
