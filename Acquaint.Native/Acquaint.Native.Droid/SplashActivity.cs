@@ -24,7 +24,7 @@ namespace Acquaint.Native.Droid
 				await Task.Delay(2000);
 
 				// start the AcquaintanceListActivity
-				StartActivity(new Intent(Application.Context, typeof(AcquaintanceListActivity)));
+				StartActivity(new Intent(Application.Context, typeof(AnimalListActivity)));
 			});
 		}
 	}

@@ -27,7 +27,7 @@ namespace Acquaint.Native.Droid
 	/// Acquaintance detail activity.
 	/// </summary>
 	[Activity]			
-	public class AcquaintanceDetailActivity : AppCompatActivity, IOnMapReadyCallback
+	public class AnimalDetailActivity : AppCompatActivity, IOnMapReadyCallback
 	{
 
         Animal _Animal = new Animal();
@@ -50,38 +50,26 @@ namespace Acquaint.Native.Droid
 		{
 			base.OnCreate(savedInstanceState);
 
+            // set layout 
 			var acquaintanceDetailLayout = LayoutInflater.Inflate(Resource.Layout.AcquaintanceDetail, null);
-
 			SetContentView(acquaintanceDetailLayout);
 
+            // set toolbar 
 			SetSupportActionBar(FindViewById<Toolbar>(Resource.Id.toolbar));
 
 			// ensure that the system bar color gets drawn
 			Window.AddFlags(WindowManagerFlags.DrawsSystemBarBackgrounds);
-
-			// enable the back button in the action bar
-			//SupportActionBar.SetDisplayHomeAsUpEnabled(true);
-			//SupportActionBar.SetHomeButtonEnabled(true);
-
+            
 			// extract the acquaintance id fomr the intent
 			var acquaintanceId = Intent.GetStringExtra(GetString(Resource.String.acquaintanceDetailIntentKey));
 
-            // fetch the acquaintance based on the id
-
-            //Database auslesen 
-           // DatabaseConnect dbcon = new DatabaseConnect();
-            //dbcon.openConnection();
-            //int id = Int32.Parse(acquaintanceId);
-            // _Animal = dbcon.getItem(id);
-            
-           
+            // fetch the shown acquaintance based on the id        
             foreach (Animal item in AnimalCollectionAdapter.animals)
             {
                 if (item.id == Int32.Parse(acquaintanceId))
                     _Animal = item;
             }
-
-            //dbcon.closeConnection(); 
+            
 
 			// set the activity title and action bar title
 			Title = SupportActionBar.Title = _Animal.name;
@@ -93,7 +81,6 @@ namespace Acquaint.Native.Droid
 
 		void SetupViews(View layout, Bundle savedInstanceState)
 		{
-            //TODO bindings
 			// inflate the content layout
 			_ContentLayout = layout.FindViewById<LinearLayout>(Resource.Id.contentLayout);
 
@@ -112,10 +99,10 @@ namespace Acquaint.Native.Droid
 			// infliate and set the name text view
 			_ContentLayout.InflateAndBindTextView(Resource.Id.nameTextView, _Animal.name);
 
-			// inflate and set the company name text view
+			// inflate and set the descrition name text view
 			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, _Animal.description);
 
-			// inflate and set the job title text view
+			// inflate and set the kingdom text view
 			_ContentLayout.InflateAndBindTextView(Resource.Id.jobTitleTextView, "Kingdom: " +_Animal.kingdom);
 
 			_ContentLayout.InflateAndBindTextView(Resource.Id.streetAddressTextView, "Origin: "+ _Animal.origin);
@@ -127,53 +114,6 @@ namespace Acquaint.Native.Droid
 			_ContentLayout.InflateAndBindTextView(Resource.Id.phoneTextView, "Class: "+_Animal.classe);
 
 			_ContentLayout.InflateAndBindTextView(Resource.Id.emailTextView, "Order: "+_Animal.order);
-
-            //google maps ? 
-			//_GetDirectionsActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.getDirectionsActionImageView, Resource.Mipmap.directions);
-			//_GetDirectionsActionImageView.Visibility = ViewStates.Invisible;
-			//_GetDirectionsActionImageView.Click += async (sender, e) => {
-			//	if (_GeocodedLocation != null)
-					// we're using the External Maps plugin from James Montemagno here (included as a NuGet)
-			//		await CrossExternalMaps.Current.NavigateTo(_Acquaintance.DisplayName, _GeocodedLocation.Latitude, _GeocodedLocation.Longitude, NavigationType.Driving);
-			//};
-
-            /*
-			var messageActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.messageActionImageView, Resource.Mipmap.message);
-			messageActionImageView.Click += (sender, e) => {
-				// we're using the Messaging plugin from Carel Lotz here (included as a NuGet)
-				var smsTask = MessagingPlugin.SmsMessenger;
-				if (smsTask.CanSendSms)
-					smsTask.SendSms(_Acquaintance.Phone.SanitizePhoneNumber(), "");
-			};
-
-			var phoneActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.phoneActionImageView, Resource.Mipmap.phone);
-			phoneActionImageView.Click += (sender, e) => {
-				// we're using the Messaging plugin from Carel Lotz here (included as a NuGet)
-				var phoneCallTask = MessagingPlugin.PhoneDialer;
-				if (phoneCallTask.CanMakePhoneCall)
-					phoneCallTask.MakePhoneCall(_Acquaintance.Phone.SanitizePhoneNumber());
-			};
-
-    */
-
-            /*
-			var emailActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.emailActionImageView, Resource.Mipmap.email);
-			emailActionImageView.Click += (sender, e) => {
-				// we're using the Messaging plugin from Carel Lotz here (included as a NuGet)
-				var emailTask = MessagingPlugin.EmailMessenger;
-				if (emailTask.CanSendEmail)
-					emailTask.SendEmail(_Acquaintance.Email, "");
-			};
-
-			// inflate the map view
-			var mapview = FindViewById<MapView>(Resource.Id.map);
-
-			// create the map view with the context
-			mapview.OnCreate(savedInstanceState);
-
-			// get the map, which calls the OnMapReady() method below (by virtue of the IOnMapReadyCallback interface that this class implements)
-			mapview.GetMapAsync(this);
-            */
 		}
 
 		void SetupAnimations()

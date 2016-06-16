@@ -134,10 +134,10 @@
     <Compile Include="DatabaseConnect.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AcquaintanceDetailActivity.cs" />
+    <Compile Include="AnimalDetailActivity.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
     <Compile Include="MainApplication.cs" />
-    <Compile Include="AcquaintanceListActivity.cs" />
+    <Compile Include="AnimalListActivity.cs" />
     <Compile Include="SplashActivity.cs" />
   </ItemGroup>
   <ItemGroup>

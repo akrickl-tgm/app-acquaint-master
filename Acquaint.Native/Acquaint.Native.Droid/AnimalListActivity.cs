@@ -22,7 +22,7 @@ namespace Acquaint.Native.Droid
     /// Acquaintance list activity.
     /// </summary>
     [Activity]
-	public class AcquaintanceListActivity : AppCompatActivity //, Transition.ITransitionListener
+	public class AnimalListActivity : AppCompatActivity //, Transition.ITransitionListener
 	{
         
         // This override is called only once during the activity's lifecycle, when it is created.
@@ -101,41 +101,13 @@ namespace Acquaint.Native.Droid
         //open database connection 
         public async Task LoadAnimals()
         {
+            //load all animals via db 
             DatabaseConnect con = new DatabaseConnect();
             con.openConnection();
+            animals = con.getAllAnimals();
 
-
-            animals = con.getAllAnimals(); 
-
-            //viewHolder.NameTextView.Text = "ausgabe " + conn.getAllAnimals();
-            //Console.WriteLine("AUSGABE DB!! " + con.getAllAnimals());
             con.closeConnection();
         }
-            
-
-        /* 
-		// a data source field
-	    readonly IDataSource<Acquaintance> _AcquaintanceDataSource;
-
-		// the list of items that this adapter uses
-		public List<Acquaintance> Acquaintances { get; private set; }
-
-		public AcquaintanceCollectionAdapter()
-		{
-			// instantiate the new data source
-			_AcquaintanceDataSource = new AcquaintanceDataSource();
-		}
-
-		/// <summary>
-		/// Loads the acquaintances.
-		/// </summary>
-		/// <returns>Task.</returns>
-		public async Task LoadAcquaintances()
-		{
-			Acquaintances = (await _AcquaintanceDataSource.GetItems()).ToList();
-		}
-
-    */
 
 		// when a RecyclerView itemView is requested, the OnCreateViewHolder() is called
 		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -162,14 +134,11 @@ namespace Acquaint.Native.Droid
 			// assign values to the views' text properties
 		    if (viewHolder == null) return;
 
-            //acquaintance.DisplayName;
+            //inhalte setzen 
             viewHolder.NameTextView.Text = animal.name; 
 		    viewHolder.KingdomTextView.Text = animal.kingdom;
 		    viewHolder.OriginTextView.Text = animal.classe;
 
-
-           
-           
 
             // use FFImageLoading library to load an android asset image into the imageview
             ImageService.LoadFileFromApplicationBundle(animal.PhotoURL).Transform(new CircleTransformation()).Into(viewHolder.ProfilePhotoImageView);
@@ -187,7 +156,7 @@ namespace Acquaint.Native.Droid
 		public void OnClick(View v)
 		{
 			// setup an intent
-			var detailIntent = new Intent(v.Context, typeof(AcquaintanceDetailActivity));
+			var detailIntent = new Intent(v.Context, typeof(AnimalDetailActivity));
 
 			// get an item by position (index)
 			var animal = animals[(int)v.Tag];

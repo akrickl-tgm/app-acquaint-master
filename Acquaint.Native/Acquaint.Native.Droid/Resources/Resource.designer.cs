@@ -26,6 +26,7 @@ namespace Acquaint.Native.Droid
 		
 		public static void UpdateIdValues()
 		{
+			global::Auth0.SDK.Resource.String.library_name = global::Acquaint.Native.Droid.Resource.String.library_name;
 			global::FFImageLoading.Transformations.Resource.String.library_name = global::Acquaint.Native.Droid.Resource.String.library_name;
 			global::PCLStorage.Resource.String.ApplicationName = global::Acquaint.Native.Droid.Resource.String.ApplicationName;
 			global::PCLStorage.Resource.String.Hello = global::Acquaint.Native.Droid.Resource.String.Hello;
