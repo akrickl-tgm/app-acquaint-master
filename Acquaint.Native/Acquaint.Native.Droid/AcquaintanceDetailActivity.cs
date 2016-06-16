@@ -113,7 +113,7 @@ namespace Acquaint.Native.Droid
 			_ContentLayout.InflateAndBindTextView(Resource.Id.nameTextView, _Animal.name);
 
 			// inflate and set the company name text view
-			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, "Description: " +_Animal.description);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, _Animal.description);
 
 			// inflate and set the job title text view
 			_ContentLayout.InflateAndBindTextView(Resource.Id.jobTitleTextView, "Kingdom: " +_Animal.kingdom);
