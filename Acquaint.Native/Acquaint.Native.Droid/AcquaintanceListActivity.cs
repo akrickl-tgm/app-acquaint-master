@@ -165,7 +165,7 @@ namespace Acquaint.Native.Droid
             //acquaintance.DisplayName;
             viewHolder.NameTextView.Text = animal.name; 
 		    viewHolder.KingdomTextView.Text = animal.kingdom;
-		    viewHolder.OriginTextView.Text = animal.origin;
+		    viewHolder.OriginTextView.Text = animal.classe;
 
 
            
