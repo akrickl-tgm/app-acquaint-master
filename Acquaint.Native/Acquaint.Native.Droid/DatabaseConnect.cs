@@ -82,15 +82,13 @@ namespace Acquaint.Native.Droid
         }
 
         public Animal getItem(int id)
-        {
-            var query_where1 = (from a in returnanimals
-                                where a.id == id
-                                select a);
-            foreach(var a in query_where1)
+        {      
+            foreach(Animal item in returnanimals)
             {
-                return (Animal)a; 
+                if (item.id == id)
+                    return item;  
             }
-            return null;
+            return new Animal() { name="etwas ist schief gelaufen", kingdom = "ganz ganz schief"};
             //return returnanimals
         }
 

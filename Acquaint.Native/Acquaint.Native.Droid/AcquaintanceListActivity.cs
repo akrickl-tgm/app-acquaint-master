@@ -17,14 +17,16 @@ using System;
 
 namespace Acquaint.Native.Droid
 {
-	/// <summary>
-	/// Acquaintance list activity.
-	/// </summary>
-	[Activity]
+    
+    /// <summary>
+    /// Acquaintance list activity.
+    /// </summary>
+    [Activity]
 	public class AcquaintanceListActivity : AppCompatActivity //, Transition.ITransitionListener
 	{
-		// This override is called only once during the activity's lifecycle, when it is created.
-		protected override async void OnCreate(Bundle savedInstanceState)
+        
+        // This override is called only once during the activity's lifecycle, when it is created.
+        protected override async void OnCreate(Bundle savedInstanceState)
 		{
 			base.OnCreate(savedInstanceState);
 
@@ -90,10 +92,10 @@ namespace Acquaint.Native.Droid
 	/// <summary>
 	/// Acquaintance collection adapter. Coordinates data the child views of RecyclerView.
 	/// </summary>
-	internal class AnimalCollectionAdapter : RecyclerView.Adapter, View.IOnClickListener
+	public class AnimalCollectionAdapter : RecyclerView.Adapter, View.IOnClickListener
 	{
-        public List<Animal> animals { get; private set;  }
 
+        public static List<Animal> animals { get; private set; }
         // load animals 
 
         //open database connection 
@@ -191,7 +193,7 @@ namespace Acquaint.Native.Droid
 			var animal = animals[(int)v.Tag];
 
 			// Add some identifying item data to the intent. In this case, the id of the acquaintance for which we're about to display the detail screen.
-			detailIntent.PutExtra(v.Context.Resources.GetString(Resource.String.acquaintanceDetailIntentKey), animal.id);
+			detailIntent.PutExtra(v.Context.Resources.GetString(Resource.String.acquaintanceDetailIntentKey), animal.id.ToString());
 
 			// get a referecne to the profileImageView
 			var profileImageView = v.FindViewById(Resource.Id.profilePhotoImageView);

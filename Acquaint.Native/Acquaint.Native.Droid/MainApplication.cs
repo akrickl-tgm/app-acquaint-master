@@ -19,11 +19,7 @@ namespace Acquaint.Native.Droid
         {
             base.OnCreate();
             RegisterActivityLifecycleCallbacks(this);
-            //A great place to initialize Xamarin.Insights and Dependency Services!
-
-
-            
-           
+            //A great place to initialize Xamarin.Insights and Dependency Services
             
         }
 

@@ -30,7 +30,7 @@ namespace Acquaint.Native.Droid
 	public class AcquaintanceDetailActivity : AppCompatActivity, IOnMapReadyCallback
 	{
 
-        Animal _Animal;
+        Animal _Animal = new Animal();
 
         View _ContentLayout;
         /*
@@ -60,8 +60,8 @@ namespace Acquaint.Native.Droid
 			Window.AddFlags(WindowManagerFlags.DrawsSystemBarBackgrounds);
 
 			// enable the back button in the action bar
-			SupportActionBar.SetDisplayHomeAsUpEnabled(true);
-			SupportActionBar.SetHomeButtonEnabled(true);
+			//SupportActionBar.SetDisplayHomeAsUpEnabled(true);
+			//SupportActionBar.SetHomeButtonEnabled(true);
 
 			// extract the acquaintance id fomr the intent
 			var acquaintanceId = Intent.GetStringExtra(GetString(Resource.String.acquaintanceDetailIntentKey));
@@ -69,10 +69,19 @@ namespace Acquaint.Native.Droid
             // fetch the acquaintance based on the id
 
             //Database auslesen 
-            DatabaseConnect dbcon = new DatabaseConnect();
-            dbcon.openConnection(); 
-			_Animal = dbcon.getItem(Int32.Parse(acquaintanceId));
-            dbcon.closeConnection(); 
+           // DatabaseConnect dbcon = new DatabaseConnect();
+            //dbcon.openConnection();
+            //int id = Int32.Parse(acquaintanceId);
+            // _Animal = dbcon.getItem(id);
+            
+           
+            foreach (Animal item in AnimalCollectionAdapter.animals)
+            {
+                if (item.id == Int32.Parse(acquaintanceId))
+                    _Animal = item;
+            }
+
+            //dbcon.closeConnection(); 
 
 			// set the activity title and action bar title
 			Title = SupportActionBar.Title = _Animal.name;
@@ -104,20 +113,20 @@ namespace Acquaint.Native.Droid
 			_ContentLayout.InflateAndBindTextView(Resource.Id.nameTextView, _Animal.name);
 
 			// inflate and set the company name text view
-			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, _Animal.kingdom);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.companyTextView, "Description: " +_Animal.description);
 
 			// inflate and set the job title text view
-			_ContentLayout.InflateAndBindTextView(Resource.Id.jobTitleTextView, _Animal.origin);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.jobTitleTextView, "Kingdom: " +_Animal.kingdom);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.streetAddressTextView, _Animal.description);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.streetAddressTextView, "Origin: "+ _Animal.origin);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.cityTextView, _Animal.family);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.cityTextView, "Family: "+_Animal.family);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.statePostalTextView, _Animal.genus);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.statePostalTextView, "Genus: "+_Animal.genus);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.phoneTextView, _Animal.classe);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.phoneTextView, "Class: "+_Animal.classe);
 
-			_ContentLayout.InflateAndBindTextView(Resource.Id.emailTextView, _Animal.order);
+			_ContentLayout.InflateAndBindTextView(Resource.Id.emailTextView, "Order: "+_Animal.order);
 
             //google maps ? 
 			//_GetDirectionsActionImageView = _ContentLayout.InflateAndBindLocalImageViewByResource(Resource.Id.getDirectionsActionImageView, Resource.Mipmap.directions);
